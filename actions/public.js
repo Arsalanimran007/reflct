@@ -32,7 +32,7 @@ export const getDailyPrompt = unstable_cache(
   },
   ["daily-prompt"], // cache key
   {
-    revalidate: 100, // 24 hours in seconds
+    revalidate: 86400, // 24 hours in seconds
     tags: ["daily-prompt"],
   }
 );
