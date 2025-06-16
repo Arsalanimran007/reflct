@@ -44,7 +44,28 @@ export async function createCollection(data) {
       throw new Error("User not found");
     }
 
-    // 5. Collection create karo DB me
+    // 5. Check if collection with the same name already exists
+    const existingCollection = await db.collection.findUnique({
+      where: { name: data.name }, // Assuming 'name' is the unique identifier
+    });
+
+    if (existingCollection) {
+      // Update the existing collection
+      const updatedCollection = await db.collection.update({
+        where: { id: existingCollection.id },
+        data: {
+          description: data.description,
+        },
+      });
+
+      // Cache revalidate after updating
+      revalidatePath("/dashboard");
+
+      // Return updated collection
+      return updatedCollection;
+    }
+
+    // If collection doesn't exist, create a new one
     const collection = await db.collection.create({
       data: {
         name: data.name,
@@ -53,15 +74,16 @@ export async function createCollection(data) {
       },
     });
 
-    // 6. Cache revalidate karo taake dashboard update ho
+    // Cache revalidate after creating
     revalidatePath("/dashboard");
 
-    // 7. Return created collection
+    // Return created collection
     return collection;
   } catch (error) {
     throw new Error(error.message);
   }
 }
+
 
 // 🔍 User ki sari collections nikalne ka server function
 export async function getCollections() {

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import CollectionForm from "@/components/collection-dialog";
 import CollectionPreview from "./collection-preview";
