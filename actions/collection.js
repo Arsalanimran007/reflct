@@ -45,9 +45,15 @@ export async function createCollection(data) {
     }
 
     // 5. Check if collection with the same name already exists
-    const existingCollection = await db.collection.findUnique({
-      where: { name: data.name }, // Assuming 'name' is the unique identifier
-    });
+  const existingCollection = await db.collection.findUnique({
+  where: {
+    name_userId: {
+      name: data.name,
+      userId: user.id,
+    },
+  },
+});
+
 
     if (existingCollection) {
       // Update the existing collection
